@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <EnableTargetingPackDownload>false</EnableTargetingPackDownload>
+    <PublishTrimmed>true</PublishTrimmed>
+    <_TrimmerDefaultAction>link</_TrimmerDefaultAction>
+  </PropertyGroup>
+
+  <!-- Redirect "dotnet publish" to "mono-rp" folder-->
+  <Target Name="TrickRuntimePackLocation" AfterTargets="ProcessFrameworkReferences">
+    <PropertyGroup>
+      <MonoRuntimeVer>5.0.0-rc.2.20474.8</MonoRuntimeVer>
+    </PropertyGroup>
+    <DownloadFile
+            SourceUrl="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/flat2/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier)/$(MonoRuntimeVer)/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier).$(MonoRuntimeVer).nupkg"
+            DestinationFolder="$(MSBuildThisFileDirectory)"
+            DestinationFileName="mono-rp.zip">
+    </DownloadFile>
+    <Unzip SourceFiles="mono-rp.zip" DestinationFolder="mono-rp" />
+    <ItemGroup>
+      <RuntimePack>
+        <PackageDirectory>mono-rp</PackageDirectory>
+      </RuntimePack>
+    </ItemGroup>
+    <Message Text="New PackageDirectory: %(RuntimePack.PackageDirectory)" Importance="high" />
+  </Target>
+
+  <!-- no idea why is this needed: -->
+  <Target Name="wtf" AfterTargets="Publish">
+    <Copy SourceFiles="libhostfxr.dylib"    DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="libhostpolicy.dylib" DestinationFolder="$(PublishDir)" />
+  </Target>
+</Project>
