@@ -8,15 +8,10 @@ Just some hacky way to try Mono runtime bits with LLVM for a simple `net5.0` con
 should download a runtime-pack with mono and use that as a "dotnet publish" source.
 
 Expected output:
-```
-*** ASM for Program:Test () ***
-(__TEXT,__text) section
-gram_Test___:
+```asm
+; *** ASM for Program:Test () ***
 0000000000000000	movl	-42, %eax ; return -42;
 0000000000000005	retq
-***
-
--42
 ```
 ^ codegen for:
 ```csharp
