@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 class Program
 {
     static void Main(string[] args)
     {
         Console.WriteLine("Hello World!");
-        Console.WriteLine(Test(2,4,6));
+        Console.WriteLine(Test());
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    static float Test(float a, float b, float c) => a * b + c; // fmadd
+    static int Test()
+    {
+        return Sse2.Subtract( // LLVM is able to fold constant vectors :p
+            Vector128<int>.Zero, 
+            Vector128.CreateScalar(42))
+            .ToScalar();
+    }
 }
