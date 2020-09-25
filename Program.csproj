@@ -28,8 +28,8 @@
     <Message Text="New PackageDirectory: %(RuntimePack.PackageDirectory)" Importance="high" />
   </Target>
 
-  <!-- no idea why is this needed: -->
-  <Target Name="wtf" AfterTargets="Publish">
+  <!-- TODO: remove once https://github.com/dotnet/runtime/pull/42729 is merged and nugets are updated -->
+  <Target Name="hack" AfterTargets="Publish">
     <Copy SourceFiles="libhostfxr.dylib"    DestinationFolder="$(PublishDir)" />
     <Copy SourceFiles="libhostpolicy.dylib" DestinationFolder="$(PublishDir)" />
   </Target>
