@@ -12,7 +12,7 @@ Expected output:
 *** ASM for Program:Test () ***
 (__TEXT,__text) section
 gram_Test___:
-0000000000000000	movl	$0xffffffd6, %eax
+0000000000000000	movl	-42, %eax ; return -42;
 0000000000000005	retq
 ***
 
