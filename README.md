@@ -10,7 +10,7 @@ should download a runtime-pack with mono and use that as a "dotnet publish" sour
 Expected output:
 ```asm
 ; *** ASM for Program:Test () ***
-0000000000000000	movl	-42, %eax ; return -42;
+0000000000000000	movl	-42, %eax  ;; return -42;
 0000000000000005	retq
 ```
 ^ codegen for:
@@ -18,9 +18,9 @@ Expected output:
 static int Test()
 {
     return Sse2.Subtract( // LLVM is able to fold constant vectors :p
-        Vector128<int>.Zero, 
-        Vector128.CreateScalar(42))
-        .ToScalar();
+                   Vector128<int>.Zero, 
+                   Vector128.CreateScalar(42))
+               .ToScalar();
 }
 ```
 
