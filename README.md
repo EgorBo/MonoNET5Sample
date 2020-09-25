@@ -18,7 +18,7 @@ gram_Test___:
 
 -42
 ```
-for
+^ codegen for:
 ```csharp
 static int Test()
 {
@@ -29,4 +29,4 @@ static int Test()
 }
 ```
 
-(MONO_VERBOSE_METHOD=Test)
+`MONO_VERBOSE_METHOD=Test`
