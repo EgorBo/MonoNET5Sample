@@ -15,8 +15,8 @@ class Program
     static int Test()
     {
         return Sse2.Subtract( // LLVM is able to fold constant vectors :p
-            Vector128<int>.Zero, 
-            Vector128.CreateScalar(42))
-            .ToScalar();
+                        Vector128<int>.Zero, 
+                        Vector128.CreateScalar(42))
+                   .ToScalar();
     }
 }

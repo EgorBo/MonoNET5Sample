@@ -3,34 +3,29 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     <EnableTargetingPackDownload>false</EnableTargetingPackDownload>
-    <PublishTrimmed>true</PublishTrimmed>
-    <_TrimmerDefaultAction>link</_TrimmerDefaultAction>
+
+    <!-- Optional: enable ILLink (makes "dotnet publish" slower)
+
+      <PublishTrimmed>true</PublishTrimmed>
+      <TrimMode>link</TrimMode>
+    -->
+    <MonoRuntimeVer>6.0.0-alpha.1.20479.3</MonoRuntimeVer>
   </PropertyGroup>
 
-  <!-- Redirect "dotnet publish" to "mono-rp" folder-->
+  <!-- Redirect "dotnet publish" to "mono-runtimepack" folder-->
   <Target Name="TrickRuntimePackLocation" AfterTargets="ProcessFrameworkReferences">
-    <PropertyGroup>
-      <MonoRuntimeVer>5.0.0-rc.2.20474.8</MonoRuntimeVer>
-    </PropertyGroup>
     <DownloadFile
-            SourceUrl="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/flat2/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier)/$(MonoRuntimeVer)/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier).$(MonoRuntimeVer).nupkg"
+            SourceUrl="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet6/nuget/v3/flat2/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier)/$(MonoRuntimeVer)/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier).$(MonoRuntimeVer).nupkg"
             DestinationFolder="$(MSBuildThisFileDirectory)"
-            DestinationFileName="mono-rp.zip">
+            DestinationFileName="mono-runtimepack.zip">
     </DownloadFile>
-    <Unzip SourceFiles="mono-rp.zip" DestinationFolder="mono-rp" />
+    <Unzip SourceFiles="mono-runtimepack.zip" DestinationFolder="mono-runtimepack" />
     <ItemGroup>
       <RuntimePack>
-        <PackageDirectory>mono-rp</PackageDirectory>
+        <PackageDirectory>mono-runtimepack</PackageDirectory>
       </RuntimePack>
     </ItemGroup>
     <Message Text="New PackageDirectory: %(RuntimePack.PackageDirectory)" Importance="high" />
-  </Target>
-
-  <!-- TODO: remove once https://github.com/dotnet/runtime/pull/42729 is merged and nugets are updated -->
-  <Target Name="hack" AfterTargets="Publish">
-    <Copy SourceFiles="libhostfxr.dylib"    DestinationFolder="$(PublishDir)" />
-    <Copy SourceFiles="libhostpolicy.dylib" DestinationFolder="$(PublishDir)" />
   </Target>
 </Project>
