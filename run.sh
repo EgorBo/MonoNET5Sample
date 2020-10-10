@@ -12,7 +12,11 @@ TARGET_CONFIG=Release
 dotnet publish -c $TARGET_CONFIG -r $TARGET_OS-$TARGET_ARCH
 
 # show LLVM IR + asm for Test method (and run actual Program)
+#   preemptive -- because we don't want to see gc safepoints in the asm
+#   --llvm stands for LLVM-JIT mode (you can also try --interpreter here)
 MONO_THREADS_SUSPEND="preemptive" \
 MONO_VERBOSE_METHOD="Test" \
 MONO_ENV_OPTIONS="--llvm --ffast-math" \
 bin/Release/net5.0/$TARGET_OS-$TARGET_ARCH/publish/Program
+
+# TODO: LLVM-AOT usage
