@@ -6,7 +6,6 @@
     <EnableTargetingPackDownload>false</EnableTargetingPackDownload>
 
     <!-- Optional: enable ILLink (makes "dotnet publish" slower)
-
       <PublishTrimmed>true</PublishTrimmed>
       <TrimMode>link</TrimMode>
     -->
@@ -27,5 +26,16 @@
       </RuntimePack>
     </ItemGroup>
     <Message Text="New PackageDirectory: %(RuntimePack.PackageDirectory)" Importance="high" />
+  </Target>
+
+  <!-- Ugly hack! mono runtime pack doesn't contain "libhostpolicy.dylib" and "libhostfxr.dylib" files
+       so let's copy them from our system .NET 5-rc1 
+       TODO: delete once https://github.com/dotnet/runtime/pull/42729 is merged -->
+  <Target Name="Hack" AfterTargets="Publish">
+    <Message Text="$(PublishDir)" Importance="High" />
+    <Copy SourceFiles="/usr/local/share/dotnet/shared/Microsoft.NETCore.App/5.0.0-rc.1.20451.14/libhostpolicy.dylib" 
+          DestinationFolder="$(PublishDir)" />
+    <Copy SourceFiles="/usr/local/share/dotnet/host/fxr/5.0.0-rc.1.20451.14/libhostfxr.dylib" 
+          DestinationFolder="$(PublishDir)" />          
   </Target>
 </Project>
