@@ -1,11 +1,10 @@
 # MonoNET5Sample
 
-Just some hacky way to try Mono runtime bits with LLVM for a simple `net5.0` console application.
+A simple `net5.0` console app with mono-LLVM as a runtime.
 
 ```
 ./run.sh
 ```
-should download a runtime-pack with mono and use that as a "dotnet publish" source.
 
 Expected output:
 ```asm

@@ -3,16 +3,18 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
+    private static void Main()
     {
-        Console.WriteLine("Hello World!");
+        bool isMono = typeof(object).Assembly.GetType("Mono.RuntimeStructs") != null;
+        Console.WriteLine($"Hello World {(isMono ? "from Mono!" : "from CoreCLR!")}");
+
         Console.WriteLine(Test());
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]
-    static int Test()
+    private static int Test()
     {
         return Sse2.Subtract( // LLVM is able to fold constant vectors :p
                         Vector128<int>.Zero, 

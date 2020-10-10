@@ -1,41 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <EnableTargetingPackDownload>false</EnableTargetingPackDownload>
-
-    <!-- Optional: enable ILLink (makes "dotnet publish" slower)
-      <PublishTrimmed>true</PublishTrimmed>
-      <TrimMode>link</TrimMode>
-    -->
-    <MonoRuntimeVer>6.0.0-alpha.1.20479.3</MonoRuntimeVer>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>link</TrimMode>
+    <RuntimeSuffix>.LLVM.AOT</RuntimeSuffix>
   </PropertyGroup>
 
-  <!-- Redirect "dotnet publish" to "mono-runtimepack" folder-->
-  <Target Name="TrickRuntimePackLocation" AfterTargets="ProcessFrameworkReferences">
-    <DownloadFile
-            SourceUrl="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet6/nuget/v3/flat2/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier)/$(MonoRuntimeVer)/microsoft.netcore.app.runtime.mono.llvm.aot.$(RuntimeIdentifier).$(MonoRuntimeVer).nupkg"
-            DestinationFolder="$(MSBuildThisFileDirectory)"
-            DestinationFileName="mono-runtimepack.zip">
-    </DownloadFile>
-    <Unzip SourceFiles="mono-runtimepack.zip" DestinationFolder="mono-runtimepack" />
-    <ItemGroup>
-      <RuntimePack>
-        <PackageDirectory>mono-runtimepack</PackageDirectory>
-      </RuntimePack>
-    </ItemGroup>
-    <Message Text="New PackageDirectory: %(RuntimePack.PackageDirectory)" Importance="high" />
-  </Target>
-
-  <!-- Ugly hack! mono runtime pack doesn't contain "libhostpolicy.dylib" and "libhostfxr.dylib" files
-       so let's copy them from our system .NET 5-rc1 
-       TODO: delete once https://github.com/dotnet/runtime/pull/42729 is merged -->
-  <Target Name="Hack" AfterTargets="Publish">
-    <Message Text="$(PublishDir)" Importance="High" />
-    <Copy SourceFiles="/usr/local/share/dotnet/shared/Microsoft.NETCore.App/5.0.0-rc.1.20451.14/libhostpolicy.dylib" 
-          DestinationFolder="$(PublishDir)" />
-    <Copy SourceFiles="/usr/local/share/dotnet/host/fxr/5.0.0-rc.1.20451.14/libhostfxr.dylib" 
-          DestinationFolder="$(PublishDir)" />          
-  </Target>
+  <ItemGroup>
+    <KnownFrameworkReference 
+        Include="Microsoft.NETCore.App.Mono$(RuntimeSuffix)"
+        TargetFramework="$(TargetFramework)"
+        RuntimeFrameworkName="Microsoft.NETCore.App"
+        DefaultRuntimeFrameworkVersion="$(BundledNETCorePlatformsPackageVersion)"
+        LatestRuntimeFrameworkVersion="$(BundledNETCorePlatformsPackageVersion)"
+        TargetingPackName="Microsoft.NETCore.App.Ref"
+        TargetingPackVersion="$(BundledNETCorePlatformsPackageVersion)"
+        RuntimePackNamePatterns="Microsoft.NETCore.App.Runtime.Mono$(RuntimeSuffix).**RID**"
+        RuntimePackRuntimeIdentifiers="$(RuntimeIdentifier)"
+        IsTrimmable="true" />
+    <FrameworkReference Remove="Microsoft.NETCore.App" />
+    <FrameworkReference 
+        Include="Microsoft.NETCore.App.Mono$(RuntimeSuffix)" 
+        IsImplicitlyDefined="true" 
+        Pack="true" 
+        PrivateAssets="All" />
+  </ItemGroup>
 </Project>
