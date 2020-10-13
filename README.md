@@ -2,6 +2,8 @@
 
 A simple `net5.0` console app with mono-LLVM as a runtime.
 
+**IMPORTANT: it's not an official way to enable Mono runtime for any `net5.0` app. It's just a simple playground to test LLVM back-end**
+
 ```
 ./run.sh
 ```
